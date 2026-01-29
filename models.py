@@ -20,6 +20,8 @@ def get_product(product_id):
     db.close()
     return product
 
+print(get_product(1)[2])
+
 def add_product(name, description, price, image):
     db = get_db()
     db.execute(
