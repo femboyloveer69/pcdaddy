@@ -30,17 +30,7 @@ def add_to_cart(id):
 def remove_from_cart(id):
     # remove product
     return
-
-@app.route("/admin/add", methods=["GET", "POST"])
-def add_product():
-    # add new product
-    return
-
-@app.route("/admin/remove", methods=["GET", "POST"])
-def remove_product():
-    # remove product
-    return
-
+    
 @app.route("/add-product", methods=["GET"])
 def add_product_form():
     conn = get_db()
