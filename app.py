@@ -1,7 +1,20 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect, url_for
 from models import *
-
+import os
+from werkzeug.utils import secure_filename
 app = Flask(__name__)
+
+UPLOAD_FOLDER = "static/uploads"
+ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif"}
+
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+
+
+def allowed_file(filename):
+    return "." in filename and \
+           filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
 
 @app.route("/")
 def home():
@@ -28,30 +41,55 @@ def add_to_cart(id):
 
 @app.route("/remove_from_cart/<int:id>")
 def remove_from_cart(id):
-    # remove product
+    # remove productfrom models import *
     return
-    
-@app.route("/add-product", methods=["GET"])
+
+@app.route("/add-product", methods=["GET", "POST"])
 def add_product_form():
-    conn = get_db()
-    categories = conn.execute("SELECT * FROM categories").fetchall()
-    conn.close()
+    if request.method == "POST":
+        try:
+            # Get form data
+            name = request.form["name"]
+            description = request.form["description"]
+            price = float(request.form["price"])  # ensure it's a number
+            category_id = int(request.form["category_id"])
+
+            # Handle file upload
+            file = request.files["image"]
+            if not file or file.filename == "":
+                return "No image uploaded", 400
+
+            if not allowed_file(file.filename):
+                return "Invalid file type. Only images allowed.", 400
+
+            # Ensure upload folder exists
+            os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
+
+            filename = secure_filename(file.filename)
+            filepath = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+            file.save(filepath)
+
+            # Add product to the database
+            add_product(name, description, price, filename, category_id)
+
+            return redirect(url_for("add_product_form"))  # redirect after success
+
+        except Exception as e:
+            print("Error adding product:", e)
+            return f"Error adding product: {e}", 500
+
+    # GET request: show form
+    categories = get_all_categories()
     return render_template("add_product.html", categories=categories)
 
-@app.route("/add-product", methods=["POST"])
-def add_product():
-    name = request.form["name"]
-    description = request.form["description"]
-    price = request.form["price"]
-    image = request.form["image"]
-    category_id = request.form["category_id"]
-
-    conn = get_db()
-    conn.execute("""
-        INSERT INTO products (name, description, price, image, category_id)
-        VALUES (?, ?, ?, ?, ?)
-    """, (name, description, price, image, category_id))
-    conn.commit()
-    conn.close()
-
-    return redirect(url_for("add_product_form"))
+@app.route("/add-category", methods=["GET", "POST"])
+def create_category():
+    if request.method == "POST":
+        name = request.form.get("name", "").strip()  # safe: defaults to empty string
+        if name != "":
+            add_category(name)
+        else:
+            return "empty name", 400
+        return redirect(url_for("create_category"))
+    categories = get_all_categories()
+    return render_template("add_category.html", categories=categories)

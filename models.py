@@ -3,7 +3,9 @@ import sqlite3
 DB_NAME = "database.db"
 
 def get_db():
-    return sqlite3.connect(DB_NAME)
+    conn = sqlite3.connect(DB_NAME)
+    conn.row_factory = sqlite3.Row  # ✅ enables category["name"]
+    return conn
 
 # ----------------- Products -----------------
 def get_all_products():
@@ -28,14 +30,18 @@ def get_product(product_id):
     return product
 
 def add_product(name, description, price, image, category_id):
-    db = get_db()
-    db.execute("""
-        INSERT INTO products (name, description, price, image, category_id)
-        VALUES (?, ?, ?, ?, ?)
-    """, (name, description, price, image, category_id))
-    db.commit()
-    db.close()
-
+    try:
+        db = get_db()
+        db.execute(
+            "INSERT INTO products (name, description, price, image, category_id) VALUES (?, ?, ?, ?, ?)",
+            (name, description, price, image, category_id)
+        )
+        db.commit()
+    except Exception as e:
+        print("Error inserting product:", e)
+        raise  # re-raise to catch in route if needed
+    finally:
+        db.close()
 def remove_product(product_id):
     db = get_db()
     db.execute("DELETE FROM products WHERE id = ?", (product_id,))
@@ -95,10 +101,16 @@ def get_all_categories():
     return categories
 
 def add_category(name):
-    db = get_db()
-    db.execute("INSERT INTO categories (name) VALUES (?)", (name,))
-    db.commit()
-    db.close()
+    try:
+        db = get_db()
+        db.execute("INSERT INTO categories (name) VALUES (?)", (name,))
+        db.commit()
+        db.close()
+        return True
+    except sqlite3.IntegrityError:
+        # Category already exists
+        db.close()
+        return False
     
 def remove_category(category_id):
     db = get_db()
