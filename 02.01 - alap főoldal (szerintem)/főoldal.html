@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8" />
+  <title>PC DADDY – PC webshop</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+  @keyframes fadeIn {
+    from {opacity:0; transform: scale(0.9);}
+    to {opacity:1; transform: scale(1);}
+  }
+  .animate-fadeIn {
+    animation: fadeIn 0.3s ease-out forwards;
+  }
+</style>
+</head>
+
+<body class="bg-gray-100 text-gray-900">
+
+<!-- ================= HEADER ================= -->
+<header class="bg-black text-white sticky top-0 z-50 shadow-lg">
+  <div class="max-w-7xl mx-auto flex items-center justify-between px-6 h-20">
+
+    <!-- LOGÓ -->
+    <div class="flex items-center gap-4">
+      <img src="../01.29 NAGY PROJEKT/képek/logó.png" alt="PC DADDY logó" class="h-20 sm:h-24 md:h-28 w-auto">
+      <div class="leading-tight">
+        <h1 class="text-2xl font-extrabold text-green-500 tracking-wide">PC DADDY</h1>
+        <p class="text-xs text-gray-400">Prémium PC webshop</p>
+      </div>
+    </div>
+
+    <!-- KERESŐ -->
+    <div class="flex-1 mx-6">
+      <input 
+        type="text"
+        placeholder="Keresés alkatrészek, konfigurációk között..."
+        class="w-full px-4 py-2 rounded-md text-black focus:outline-none focus:ring-2 focus:ring-green-500"
+      />
+    </div>
+
+    <!-- KOSÁR -->
+    <div class="flex items-center">
+      <button class="text-3xl hover:text-green-500 transition relative" aria-label="Kosár">
+        🛒
+        <span class="absolute -top-2 -right-2 bg-green-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">0</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ================= MAIN ================= -->
+<main class="max-w-7xl mx-auto px-6 py-12">
+
+  <!-- KATEGÓRIÁK CÍM -->
+  <h2 id="kategoria" class="text-3xl font-bold text-center mb-12">Kategóriák</h2>
+
+  <!-- KATEGÓRIA RÁCS -->
+  <section class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-8">
+
+    <!-- Videókártya -->
+    <div class="bg-white border rounded-xl shadow-sm hover:shadow-xl transition p-5 text-center">
+      <img src="../01.29 NAGY PROJEKT/képek/videókártya.avif" class="h-48 mx-auto mb-4 object-contain" alt="Videókártya">
+      <p class="font-semibold">Videókártyák</p>
+      <button class="mt-2 bg-black text-white px-4 py-2 rounded hover:bg-green-500 transition">Megnézem</button>
+    </div>
+
+    <!-- Processzor -->
+    <div class="bg-white border rounded-xl shadow-sm hover:shadow-xl transition p-5 text-center">
+      <img src="../01.29 NAGY PROJEKT/képek/processzor.webp" class="h-48 mx-auto mb-4 object-contain" alt="Processzor">
+      <p class="font-semibold">Processzorok</p>
+      <button class="mt-2 bg-black text-white px-4 py-2 rounded hover:bg-green-500 transition">Megnézem</button>
+    </div>
+
+    <!-- Alaplap -->
+    <div class="bg-white border rounded-xl shadow-sm hover:shadow-xl transition p-5 text-center">
+      <img src="../01.29 NAGY PROJEKT/képek/alaplap.jpg" class="h-48 mx-auto mb-4 object-contain" alt="Alaplap">
+      <p class="font-semibold">Alaplapok</p>
+      <button class="mt-2 bg-black text-white px-4 py-2 rounded hover:bg-green-500 transition">Megnézem</button>
+    </div>
+
+    <!-- Memória -->
+    <div class="bg-white border rounded-xl shadow-sm hover:shadow-xl transition p-5 text-center">
+      <img src="../01.29 NAGY PROJEKT/képek/RAM.webp" class="h-48 mx-auto mb-4 object-contain" alt="RAM">
+      <p class="font-semibold">Memória (RAM)</p>
+      <button class="mt-2 bg-black text-white px-4 py-2 rounded hover:bg-green-500 transition">Megnézem</button>
+    </div>
+
+    <!-- SSD -->
+    <div class="bg-white border rounded-xl shadow-sm hover:shadow-xl transition p-5 text-center">
+      <img src="../01.29 NAGY PROJEKT/képek/ssd.jpg" class="h-48 mx-auto mb-4 object-contain" alt="SSD">
+      <p class="font-semibold">SSD</p>
+      <button class="mt-2 bg-black text-white px-4 py-2 rounded hover:bg-green-500 transition">Megnézem</button>
+    </div>
+
+    <!-- HDD -->
+    <div class="bg-white border rounded-xl shadow-sm hover:shadow-xl transition p-5 text-center">
+      <img src="../01.29 NAGY PROJEKT/képek/hdd.jpg" class="h-48 mx-auto mb-4 object-contain" alt="HDD">
+      <p class="font-semibold">HDD</p>
+      <button class="mt-2 bg-black text-white px-4 py-2 rounded hover:bg-green-500 transition">Megnézem</button>
+    </div>
+
+    <!-- Processzor hűtő -->
+    <div class="bg-white border rounded-xl shadow-sm hover:shadow-xl transition p-5 text-center">
+      <img src="../01.29 NAGY PROJEKT/képek/processzor hűtő.webp" class="h-48 mx-auto mb-4 object-contain" alt="Processzor hűtő">
+      <p class="font-semibold">Processzor hűtő</p>
+      <button class="mt-2 bg-black text-white px-4 py-2 rounded hover:bg-green-500 transition">Megnézem</button>
+    </div>
+
+    <!-- Tápegység -->
+    <div class="bg-white border rounded-xl shadow-sm hover:shadow-xl transition p-5 text-center">
+      <img src="../01.29 NAGY PROJEKT/képek/tápegység.jpg" class="h-48 mx-auto mb-4 object-contain" alt="Tápegység">
+      <p class="font-semibold">Tápegység</p>
+      <button class="mt-2 bg-black text-white px-4 py-2 rounded hover:bg-green-500 transition">Megnézem</button>
+    </div>
+
+    <!-- Számítógépház -->
+    <div class="bg-white border rounded-xl shadow-sm hover:shadow-xl transition p-5 text-center">
+      <img src="../01.29 NAGY PROJEKT/képek/haz.webp" class="h-48 mx-auto mb-4 object-contain" alt="Számítógépház">
+      <p class="font-semibold">Számítógépház</p>
+      <button class="mt-2 bg-black text-white px-4 py-2 rounded hover:bg-green-500 transition">Megnézem</button>
+    </div>
+
+    <!-- Billentyűzet -->
+    <div class="bg-white border rounded-xl shadow-sm hover:shadow-xl transition p-5 text-center">
+      <img src="../01.29 NAGY PROJEKT/képek/billentyűzet.jpg" class="h-48 mx-auto mb-4 object-contain" alt="Billentyűzet">
+      <p class="font-semibold">Billentyűzet</p>
+      <button class="mt-2 bg-black text-white px-4 py-2 rounded hover:bg-green-500 transition">Megnézem</button>
+    </div>
+
+    <!-- Egér -->
+    <div class="bg-white border rounded-xl shadow-sm hover:shadow-xl transition p-5 text-center">
+      <img src="../01.29 NAGY PROJEKT/képek/egér.jpg" class="h-48 mx-auto mb-4 object-contain" alt="Egér">
+      <p class="font-semibold">Egér</p>
+      <button class="mt-2 bg-black text-white px-4 py-2 rounded hover:bg-green-500 transition">Megnézem</button>
+    </div>
+
+    <!-- Fejhallgató -->
+    <div class="bg-white border rounded-xl shadow-sm hover:shadow-xl transition p-5 text-center">
+      <img src="../01.29 NAGY PROJEKT/képek/fejhallgató.webp" class="h-48 mx-auto mb-4 object-contain" alt="Fejhallgató">
+      <p class="font-semibold">Fejhallgató</p>
+      <button class="mt-2 bg-black text-white px-4 py-2 rounded hover:bg-green-500 transition">Megnézem</button>
+    </div>
+
+  </section>
+
+  <!-- ================= BLOG ================= -->
+  <section id="blog" class="mt-20">
+
+    <h2 class="text-3xl font-bold mb-8 text-center">Blog & Tudástár</h2>
+
+    <div class="bg-white border rounded-xl shadow-md p-6 flex flex-col md:flex-row gap-6">
+      <img src="../01.29 NAGY PROJEKT/képek/blog_pc.jpg" alt="Blog PC" class="w-full md:w-1/2 h-60 object-cover rounded">
+      <div class="flex-1">
+        <p>
+          Webshopunk 2026-ban indult azzal a céllal, hogy megbízható forrást biztosítson számítógép-alkatrészek és technológiai megoldások terén.
+        </p>
+        <p class="mt-2">
+          Nem csak termékeket árulunk – segítünk választani. Útmutatók, tesztek és valódi tapasztalatok várnak.
+        </p>
+        <button class="mt-4 bg-black text-white px-4 py-2 rounded hover:bg-green-500 transition">Blog megnyitása</button>
+      </div>
+    </div>
+
+  </section>
+
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer id="kapcsolat" class="bg-black text-gray-400 mt-20">
+  <div class="max-w-7xl mx-auto py-12 px-6 grid md:grid-cols-3 gap-8">
+
+    <div>
+      <h4 class="text-white font-bold mb-4">PC DADDY</h4>
+      <p>2026 © Minden jog fenntartva</p>
+    </div>
+
+    <div>
+      <h4 class="text-white font-bold mb-4">Menü</h4>
+      <ul class="space-y-2">
+        <li><a href="#kategoria" class="hover:text-green-500 transition">Kategóriák</a></li>
+        <li><a href="#blog" class="hover:text-green-500 transition">Blog</a></li>
+        <li><a href="#kapcsolat" class="hover:text-green-500 transition">Kapcsolat</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <h4 class="text-white font-bold mb-4">Kapcsolat</h4>
+      <p>Email: info@pcdaddy.hu</p>
+      <p>Telefon: +36 20 123 4567</p>
+    </div>
+
+  </div>
+</footer>
+
+<div id="blogModal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden z-50">
+  <div class="bg-white rounded-xl shadow-xl w-11/12 max-w-2xl p-6 relative animate-fadeIn">
+    <button id="closeModal" class="absolute top-4 right-4 text-gray-600 hover:text-black text-2xl font-bold">&times;</button>
+    <h3 class="text-2xl font-bold mb-4 text-center">Blog & Tudástár</h3>
+    <p>
+      Üdv a PC DADDY Blogban! 💻<br>
+      Itt minden van: tesztek, útmutatók, tippek a legjobb PC konfigurációkhoz és a legfrissebb tech hírek.
+    </p>
+    <p class="mt-2">
+      Fedezd fel a világot a számítógépek mögött, és építsd meg álmaid gépét!
+    </p>
+    <div class="mt-6 text-center">
+      <a href="#blog" class="bg-green-500 text-white px-6 py-2 rounded hover:bg-black transition">Blog teljes megnyitása</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  const blogBtn = document.querySelector("#blog button");
+  const modal = document.getElementById("blogModal");
+  const closeBtn = document.getElementById("closeModal");
+
+
+  blogBtn.addEventListener("click", () => {
+    modal.classList.remove("hidden");
+  });
+
+
+  closeBtn.addEventListener("click", () => {
+    modal.classList.add("hidden");
+  });
+
+
+  // Ha a felhasználó a háttérre kattint, zárja a modalt
+  modal.addEventListener("click", (e) => {
+    if(e.target === modal){
+      modal.classList.add("hidden");
+    }
+  });
+</script>
+</body>
+</html>
