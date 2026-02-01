@@ -23,12 +23,12 @@ def home():
 
 @app.route("/products")
 def products():
-    return 
+    return render_template("products.html")
 
 @app.route("/product/<int:id>")
 def product(id):
     #show one product
-    return
+    return render_template("product.html")
 
 @app.route("/cart")
 def cart():
