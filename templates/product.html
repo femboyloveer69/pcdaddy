@@ -63,18 +63,18 @@ body {
 /* Layout */
 .product-layout {
     display: grid;
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: 1fr 3fr;
     gap: 20px;
 }
 
 /* Image area */
 .product-image {
     background: #ddd;
-    aspect-ratio: 1 / 1;
+    height: 250px;
+    width: 250px;
     border-radius: 20px;
     border: 1px solid #aaa;
-    background-image: linear-gradient(135deg, #ddd 25%, #bbb 25%, #bbb 50%, #ddd 50%, #ddd 75%, #bbb 75%);
-    background-size: 25px 25px;
+    background-image: url(../static/uploads/{{product.image}});
 }
 
 /* Description */
@@ -136,16 +136,14 @@ body {
 <div class="product-container">
     <div class="product-layout">
         
-        <!-- Left side -->
         <div>
             <div class="product-image"></div>
-            <div class="product-description">leírás...</div>
+            <div class="product-description">{{ product.description }}</div>
         </div>
 
-        <!-- Right side -->
         <div class="product-info">
             <div class="product-price-box">
-                Termék<br>Ár
+                Termék<br>Ár: {{ product.price }}
             </div>
             <button class="buy-button">Vásárlás</button>
         </div>

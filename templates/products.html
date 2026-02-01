@@ -16,7 +16,6 @@ body {
     background: #dcdcdc;
 }
 
-/* Top bar */
 .topbar {
     display: flex;
     align-items: center;
@@ -41,14 +40,14 @@ body {
     font-size: 22px;
 }
 
-/* Layout */
+
 .layout {
     display: flex;
     padding: 16px;
     gap: 16px;
 }
 
-/* Sidebar */
+
 .sidebar {
     width: 180px;
     background: #eee;
@@ -65,7 +64,7 @@ body {
     padding: 6px;
 }
 
-/* Content */
+
 .content {
     flex: 1;
     background: #f5f5f5;
@@ -78,14 +77,12 @@ body {
     margin-top: 0;
 }
 
-/* Product grid */
 .grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
     gap: 20px;
 }
 
-/* Product card */
 .product {
     background: white;
     border: 1px solid #aaa;
@@ -109,6 +106,9 @@ body {
     font-weight: bold;
     margin-top: 4px;
 }
+.category{
+    display: inline-block;
+}
 </style>
 </head>
 
@@ -125,55 +125,27 @@ body {
         <button>szűrő mentés</button>
         <input type="number" placeholder="ár min." />
         <input type="number" placeholder="ár max." />
-        <select><option>kategória</option></select>
-        <select><option>kategória</option></select>
-        <select><option>kategória</option></select>
-        <select><option>kategória</option></select>
-    </aside>
+        {% for cat in categories %}
+            <div class="category">
+                <input type="checkbox" id="{{ cat.id }}" name="{{ cat.name }}" value="{{ cat.name }}">
+                <label for="{{ cat.id }}">{{ cat.name }}</label>
+            </div>
 
+        {% endfor %}
+    </aside>
     <section class="content">
         <h2>Termékek</h2>
         <div class="grid">
+             {% for prod in products %}
+                <a href="/product/{{ prod.id }}">
+                    <div class="product">
+                        <div class="product-img"></div>
+                        <div class="product-name">{{ prod.name }}</div>
+                        <div class="product-price">{{ prod.price }} Ft</div>
+                    </div>
+                </a>
 
-            <!-- PRODUCT CARD — duplicate this block infinitely -->
-            <div class="product">
-                <div class="product-img"></div>
-                <div class="product-name">Termék 1</div>
-                <div class="product-price">3 990 Ft</div>
-            </div>
-
-            <div class="product">
-                <div class="product-img"></div>
-                <div class="product-name">Termék 2</div>
-                <div class="product-price">5 490 Ft</div>
-            </div>
-
-            <div class="product">
-                <div class="product-img"></div>
-                <div class="product-name">Termék 3</div>
-                <div class="product-price">2 990 Ft</div>
-            </div>
-
-            <div class="product">
-                <div class="product-img"></div>
-                <div class="product-name">Termék 4</div>
-                <div class="product-price">7 990 Ft</div>
-            </div>
-
-            <div class="product">
-                <div class="product-img"></div>
-                <div class="product-name">Termék 5</div>
-                <div class="product-price">6 490 Ft</div>
-            </div>
-
-            <div class="product">
-                <div class="product-img"></div>
-                <div class="product-name">Termék 6</div>
-                <div class="product-price">4 290 Ft</div>
-            </div>
-
-            <!-- Add more here and the grid keeps expanding ↓ -->
-
+            {% endfor %}
         </div>
     </section>
 </main>
