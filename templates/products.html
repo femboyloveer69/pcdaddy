@@ -147,7 +147,7 @@
 
     {% for cat in categories %}
       <div class="category">
-        <input type="checkbox" id="cat{{ cat.id }}" name="category" value="{{ cat.name }}">
+        <input type="radio" id="cat{{ cat.id }}" name="category" value="{{ cat.name }}">
         <label for="cat{{ cat.id }}">{{ cat.name }}</label>
       </div>
     {% endfor %}

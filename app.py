@@ -23,7 +23,22 @@ def home():
 
 @app.route("/products")
 def products():
-    products = get_all_products()
+    category = request.args.get("category")
+    pricemin = request.args.get("pricemin", type=int)
+    pricemax = request.args.get("pricemax", type=int)
+    query = "SELECT * FROM products WHERE 1=1 "
+    params = []
+    if(category):
+        query += "AND category_id = (SELECT id FROM categories WHERE name = ?)"
+        params.append(category)
+    if(pricemin):
+        query += "AND price > ?"
+        params.append(pricemin)
+    if(pricemax):
+        query += "AND price< ?"
+        params.append(pricemax)
+    db = get_db()
+    products = db.execute(query, params)
     categories = get_all_categories()
     return render_template("products.html", categories = categories, products = products)
 
