@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8" />
+  <title>PC DADDY – Kosár</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-900 min-h-screen flex flex-col">
+
+<!-- HEADER -->
+<header class="bg-black text-white sticky top-0 z-50 shadow-lg">
+  <div class="max-w-7xl mx-auto flex items-center justify-between px-6 h-20">
+    <div class="flex items-center gap-4">
+      <img src="../02.01 - alap főoldal (szerintem)/képek/logó.png"
+           alt="PC DADDY logó"
+           class="h-16 w-auto">
+      <div class="leading-tight">
+        <h1 class="text-2xl font-extrabold text-green-500 tracking-wide">
+          PC DADDY
+        </h1>
+        <p class="text-xs text-gray-400">
+          PC webshop
+        </p>
+      </div>
+    </div>
+    <span class="text-lg font-semibold">🛒 Kosár (<span id="cart-count">0</span>)</span>
+  </div>
+</header>
+
+<!-- MAIN -->
+<main class="flex-1 max-w-6xl mx-auto px-6 py-10 w-full">
+
+  <!-- Termékek lista -->
+  <div id="product-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+    <!-- Termékek ide kerülnek JavaScriptből -->
+  </div>
+
+  <!-- Kosár -->
+  <div class="bg-white rounded-xl shadow-md p-8 text-center max-w-2xl mx-auto">
+    <h2 class="text-3xl font-bold mb-4">🛒 Kosarad</h2>
+    <div id="cart-items" class="mb-6">
+      <p class="text-gray-500">Még nincs termék a kosárban.</p>
+    </div>
+    <button
+      id="checkout-btn"
+      class="bg-green-500 text-white px-8 py-3 rounded-lg hover:bg-green-600 transition disabled:opacity-50"
+      disabled>
+      Fizetés
+    </button>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="bg-black text-gray-400">
+  <div class="max-w-7xl mx-auto py-8 px-6 text-center">
+    2026 © PC DADDY – Kosár oldal
+  </div>
+</footer>
+
+<script>
+// ----------------------
+// Példa termékek
+// ----------------------
+const products = [
+  {id: 1, name: 'RTX 3060', price: 250000},
+  {id: 2, name: 'Intel i7 10700 KF', price: 120000},
+  {id: 3, name: 'Samsung 990 Pro SSD', price: 80000}
+];
+
+// Kosár betöltése localStorage-ból
+let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+// ----------------------
+// Termékek megjelenítése
+// ----------------------
+const productList = document.getElementById('product-list');
+products.forEach(product => {
+  const div = document.createElement('div');
+  div.className = "bg-white p-6 rounded-xl shadow hover:shadow-lg transition text-center";
+  div.innerHTML = `
+    <h3 class="font-bold text-xl mb-2">${product.name}</h3>
+    <p class="text-gray-600 mb-4">${product.price.toLocaleString()} Ft</p>
+    <button class="bg-black text-white px-6 py-2 rounded hover:bg-green-500 transition" onclick="addToCart(${product.id})">
+      Kosárba
+    </button>
+  `;
+  productList.appendChild(div);
+});
+
+// ----------------------
+// Kosár kezelése
+// ----------------------
+function updateCart() {
+  const cartItems = document.getElementById('cart-items');
+  const cartCount = document.getElementById('cart-count');
+  const checkoutBtn = document.getElementById('checkout-btn');
+
+  if(cart.length === 0){
+    cartItems.innerHTML = '<p class="text-gray-500">Még nincs termék a kosárban.</p>';
+    checkoutBtn.disabled = true;
+  } else {
+    cartItems.innerHTML = cart.map(item => `
+      <div class="flex justify-between items-center mb-2">
+        <span>${item.name} - ${item.price.toLocaleString()} Ft</span>
+        <button class="text-red-500 font-bold" onclick="removeFromCart(${item.id})">×</button>
+      </div>
+    `).join('');
+    checkoutBtn.disabled = false;
+  }
+
+  cartCount.textContent = cart.length;
+  localStorage.setItem('cart', JSON.stringify(cart));
+}
+
+function addToCart(id){
+  const product = products.find(p => p.id === id);
+  if(product){
+    cart.push(product);
+    updateCart();
+  }
+}
+
+function removeFromCart(id){
+  cart = cart.filter(item => item.id !== id);
+  updateCart();
+}
+
+// Inicializálás
+updateCart();
+</script>
+
+</body>
+</html>
