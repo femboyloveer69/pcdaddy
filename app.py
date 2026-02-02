@@ -97,11 +97,11 @@ def add_category_form():
 
             add_category(name, filename)
 
-            return redirect(url_for("add_product_form"))
+            return redirect(url_for("add_category_form"))
 
         except Exception as e:
             print("Error adding product:", e)
             return f"Error adding product: {e}", 500
 
     categories = get_all_categories()
-    return render_template("add_product.html", categories=categories)
+    return render_template("add_category.html")

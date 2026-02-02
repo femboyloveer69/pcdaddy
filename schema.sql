@@ -5,7 +5,8 @@ DROP TABLE IF EXISTS categories;
 
 CREATE TABLE categories (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL UNIQUE
+    name TEXT NOT NULL UNIQUE,
+    image TEXT
 );
 
 CREATE TABLE products (
