@@ -100,17 +100,19 @@ def get_all_categories():
     db.close()
     return categories
 
-def add_category(name):
+def add_category(name, image):
     try:
         db = get_db()
-        db.execute("INSERT INTO categories (name) VALUES (?)", (name,))
+        db.execute(
+            "INSERT INTO categories (name, image) VALUES (?, ?)",
+            (name, image)
+        )
         db.commit()
+    except Exception as e:
+        print("Error inserting product:", e)
+        raise  # re-raise to catch in route if needed
+    finally:
         db.close()
-        return True
-    except sqlite3.IntegrityError:
-        # Category already exists
-        db.close()
-        return False
     
 def remove_category(category_id):
     db = get_db()

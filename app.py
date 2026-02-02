@@ -78,13 +78,30 @@ def add_product_form():
     return render_template("add_product.html", categories=categories)
 
 @app.route("/add-category", methods=["GET", "POST"])
-def create_category():
+def add_category_form():
     if request.method == "POST":
-        name = request.form.get("name", "").strip()
-        if name != "":
-            add_category(name)
-        else:
-            return "empty name", 400
-        return redirect(url_for("create_category"))
+        try:
+            name = request.form["name"]
+            file = request.files["image"]
+            if not file or file.filename == "":
+                return "No image uploaded", 400
+
+            if not allowed_file(file.filename):
+                return "Invalid file type. Only images allowed.", 400
+
+            os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
+
+            filename = secure_filename(file.filename)
+            filepath = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+            file.save(filepath)
+
+            add_category(name, filename)
+
+            return redirect(url_for("add_product_form"))
+
+        except Exception as e:
+            print("Error adding product:", e)
+            return f"Error adding product: {e}", 500
+
     categories = get_all_categories()
-    return render_template("add_category.html", categories=categories)
+    return render_template("add_product.html", categories=categories)
