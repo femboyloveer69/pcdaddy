@@ -4,10 +4,8 @@ DB_NAME = "database.db"
 
 def get_db():
     conn = sqlite3.connect(DB_NAME)
-    conn.row_factory = sqlite3.Row  # ✅ enables category["name"]
+    conn.row_factory = sqlite3.Row
     return conn
-
-# ----------------- Products -----------------
 def get_all_products():
     db = get_db()
     products = db.execute("""
@@ -39,7 +37,7 @@ def add_product(name, description, price, image, category_id):
         db.commit()
     except Exception as e:
         print("Error inserting product:", e)
-        raise  # re-raise to catch in route if needed
+        raise 
     finally:
         db.close()
 def remove_product(product_id):
@@ -47,8 +45,6 @@ def remove_product(product_id):
     db.execute("DELETE FROM products WHERE id = ?", (product_id,))
     db.commit()
     db.close()
-
-# ----------------- Cart -----------------
 def add_to_cart(product_id):
     db = get_db()
     item = db.execute(
@@ -92,8 +88,6 @@ def clear_cart():
     db.execute("DELETE FROM cart")
     db.commit()
     db.close()
-
-# ----------------- Categories -----------------
 def get_all_categories():
     db = get_db()
     categories = db.execute("SELECT * FROM categories").fetchall()
@@ -110,15 +104,13 @@ def add_category(name, image):
         db.commit()
     except Exception as e:
         print("Error inserting product:", e)
-        raise  # re-raise to catch in route if needed
+        raise 
     finally:
         db.close()
     
 def remove_category(category_id):
     db = get_db()
-    # Optional: remove all products in that category first
     db.execute("DELETE FROM products WHERE category_id = ?", (category_id,))
-    # Then remove the category itself
     db.execute("DELETE FROM categories WHERE id = ?", (category_id,))
     db.commit()
     db.close()

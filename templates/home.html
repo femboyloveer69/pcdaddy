@@ -23,7 +23,7 @@
 
     <!-- LOGÓ -->
     <div class="flex items-center gap-4">
-      <img src="../static/images/logó.png" alt="PC DADDY logó" class="h-20 sm:h-24 md:h-28 w-auto">
+      <a href="/"><img src="../static/images/logó.png" alt="PC DADDY logó" class="h-16 w-auto"></a>
       <div class="leading-tight">
         <h1 class="text-2xl font-extrabold text-green-500 tracking-wide">PC DADDY</h1>
         <p class="text-xs text-gray-400">Prémium PC webshop</p>
@@ -56,16 +56,24 @@
   <h2 id="kategoria" class="text-3xl font-bold text-center mb-12">Kategóriák</h2>
 
   <!-- KATEGÓRIA RÁCS -->
-  <section class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-8">
-     {% for cat in categories %}
-        <div class="bg-white border rounded-xl shadow-sm hover:shadow-xl transition p-5 text-center">
-            <img src="../static/uploads/{{ cat.image }}" class="h-48 mx-auto mb-4 object-contain" alt="{{ cat.name }}">
-            <p class="font-semibold">{{ cat.name}} </p>
-        <button class="mt-2 bg-black text-white px-4 py-2 rounded hover:bg-green-500 transition">Megnézem</button>
-    </div>
-     {% endfor %}
-  </section>
+<section class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-8">
+  {% for cat in categories %}
+    <a href="/products?category={{ cat.name }}"
+       class="block bg-white border rounded-xl shadow-sm hover:shadow-xl transition p-5 text-center hover:ring-2 hover:ring-green-500">
 
+        <img src="../static/uploads/{{ cat.image }}"
+             class="h-48 mx-auto mb-4 object-contain"
+             alt="{{ cat.name }}">
+
+        <p class="font-semibold mb-2">{{ cat.name }}</p>
+
+        <span class="inline-block mt-2 bg-black text-white px-4 py-2 rounded hover:bg-green-500 transition">
+          Megnézem
+        </span>
+
+    </a>
+  {% endfor %}
+</section>
   <!-- ================= BLOG ================= -->
   <section id="blog" class="mt-20">
 
