@@ -140,18 +140,20 @@
   </div>
 </header>
 <main class="layout">
-  <aside class="sidebar">
-    <button>Szűrő mentés</button>
-    <input type="number" placeholder="Ár min." />
-    <input type="number" placeholder="Ár max." />
+  <form method="POST" action="/products">
+    <aside class="sidebar">
+      <button>Szűrő mentés</button>
+      <input type="number" name="pricemin" placeholder="Ár min." />
+      <input type="number" name="pricemax" placeholder="Ár max." />
 
-    {% for cat in categories %}
-      <div class="category">
-        <input type="radio" id="cat{{ cat.id }}" name="category" value="{{ cat.name }}">
-        <label for="cat{{ cat.id }}">{{ cat.name }}</label>
-      </div>
-    {% endfor %}
-  </aside>
+      {% for cat in categories %}
+        <div class="category">
+          <input type="radio" id="cat{{ cat.id }}" name="category" value="{{ cat.name }}">
+          <label for="cat{{ cat.id }}">{{ cat.name }}</label>
+        </div>
+      {% endfor %}
+    </aside>
+  </form>
   <section class="content">
     <h2>Termékek</h2>
 

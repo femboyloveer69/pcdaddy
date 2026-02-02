@@ -21,8 +21,13 @@ def home():
     categories = get_all_categories()
     return render_template("home.html", categories=categories)
 
-@app.route("/products")
+@app.route("/products", methods=["GET", "POST"])
 def products():
+    if(request.method == "POST"):
+        pricemin = request.form.get("pricemin")
+        pricemax = request.form.get("pricemax")
+        category = request.form.get("category")
+        return redirect(url_for('products', pricemin=pricemin, pricemax=pricemax, category=category))
     category = request.args.get("category")
     pricemin = request.args.get("pricemin", type=int)
     pricemax = request.args.get("pricemax", type=int)
