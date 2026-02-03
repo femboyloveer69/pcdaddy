@@ -45,14 +45,42 @@ def remove_product(product_id):
     db.execute("DELETE FROM products WHERE id = ?", (product_id,))
     db.commit()
     db.close()
+# Cart
+def get_cart_items():
+    db = get_db()
+    db.row_factory = sqlite3.Row
+    items = db.execute("""
+        SELECT
+            cart.id AS cart_id,
+            products.id AS product_id,
+            products.name,
+            products.price,
+            products.image,
+            cart.quantity
+        FROM cart
+        JOIN products ON cart.product_id = products.id
+    """).fetchall()
+    db.close()
+    return items
+
+def get_cart_product_count():
+    db = get_db()
+    result = db.execute(
+        "SELECT COUNT(*) FROM cart"
+    ).fetchone()
+    db.close()
+    return result[0]
+
+
+
 def add_to_cart(product_id):
     db = get_db()
-    item = db.execute(
-        "SELECT * FROM cart WHERE product_id = ?",
+    cur = db.execute(
+        "SELECT quantity FROM cart WHERE product_id = ?",
         (product_id,)
     ).fetchone()
 
-    if item:
+    if cur:
         db.execute(
             "UPDATE cart SET quantity = quantity + 1 WHERE product_id = ?",
             (product_id,)
@@ -66,28 +94,15 @@ def add_to_cart(product_id):
     db.commit()
     db.close()
 
-def remove_from_cart(product_id):
+
+def remove_from_cart(cart_id):
     db = get_db()
-    db.execute("DELETE FROM cart WHERE product_id = ?", (product_id,))
+    db.execute("DELETE FROM cart WHERE id = ?", (cart_id,))
     db.commit()
     db.close()
 
-def get_cart():
-    db = get_db()
-    items = db.execute("""
-        SELECT products.id, products.name, products.price, products.image, categories.name as category, cart.quantity
-        FROM cart
-        JOIN products ON cart.product_id = products.id
-        JOIN categories ON products.category_id = categories.id
-    """).fetchall()
-    db.close()
-    return items
 
-def clear_cart():
-    db = get_db()
-    db.execute("DELETE FROM cart")
-    db.commit()
-    db.close()
+
 def get_all_categories():
     db = get_db()
     categories = db.execute("SELECT * FROM categories").fetchall()

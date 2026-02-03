@@ -19,7 +19,7 @@ def allowed_file(filename):
 @app.route("/")
 def home():
     categories = get_all_categories()
-    return render_template("home.html", categories=categories)
+    return render_template("home.html", categories=categories, items_amount = get_cart_product_count())
 
 @app.route("/products", methods=["GET", "POST"])
 def products():
@@ -45,24 +45,29 @@ def products():
     db = get_db()
     products = db.execute(query, params)
     categories = get_all_categories()
-    return render_template("products.html", categories = categories, products = products)
+    return render_template("products.html", categories = categories, products = products, items_amount = get_cart_product_count())
 
 @app.route("/product/<int:id>")
 def product(id):
     product = get_product(id)
-    return render_template("product.html", product = product)
+    return render_template("product.html", product = product, items_amount = get_cart_product_count())
 
 @app.route("/cart")
 def cart():
-    return render_template("cart.html")
+    cartitems = get_cart_items()
+    total = sum(item["price"] * item["quantity"] for item in cartitems)
+    return render_template("cart.html", cartitems=cartitems, total=total)
 
-@app.route("/add_to_cart/<int:id>")
-def add_to_cart(id):
-    return
+
+@app.route("/add_to_cart/<int:id>", methods=["POST"])
+def add_cart_item(id):
+    add_to_cart(id)
+    return redirect(request.referrer)
 
 @app.route("/remove_from_cart/<int:id>")
-def remove_from_cart(id):
-    return
+def remove_cart_item(id):
+    remove_from_cart(id)
+    return redirect(url_for("cart"))
 
 @app.route("/add-product", methods=["GET", "POST"])
 def add_product_form():
@@ -95,7 +100,7 @@ def add_product_form():
             return f"Error adding product: {e}", 500
 
     categories = get_all_categories()
-    return render_template("add_product.html", categories=categories)
+    return render_template("add_product.html", categories=categories, items_amount = get_cart_product_count())
 
 @app.route("/add-category", methods=["GET", "POST"])
 def add_category_form():
@@ -124,4 +129,4 @@ def add_category_form():
             return f"Error adding product: {e}", 500
 
     categories = get_all_categories()
-    return render_template("add_category.html")
+    return render_template("add_category.html", items_amount = get_cart_product_count())
