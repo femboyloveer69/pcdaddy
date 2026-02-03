@@ -54,7 +54,7 @@ def product(id):
 
 @app.route("/cart")
 def cart():
-    return
+    return render_template("cart.html")
 
 @app.route("/add_to_cart/<int:id>")
 def add_to_cart(id):

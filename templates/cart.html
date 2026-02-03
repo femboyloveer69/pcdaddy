@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8" />
+  <title>PC DADDY – Kosár</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 text-gray-900 min-h-screen flex flex-col">
+
+<!-- ================= HEADER ================= -->
+<header class="bg-black text-white sticky top-0 z-50 shadow-lg">
+  <div class="max-w-7xl mx-auto flex items-center justify-between px-6 h-20">
+
+    <!-- LOGÓ -->
+    <div class="flex items-center gap-4">
+      <a href="/"><img src="../static/images/logó.png" alt="PC DADDY logó" class="h-16 w-auto"></a>
+      <div class="leading-tight">
+        <h1 class="text-2xl font-extrabold text-green-500 tracking-wide">PC DADDY</h1>
+        <p class="text-xs text-gray-400">Prémium PC webshop</p>
+      </div>
+    </div>
+
+    <!-- KERESŐ -->
+    <div class="flex-1 mx-6">
+      <input 
+        type="text"
+        placeholder="Keresés alkatrészek, konfigurációk között..."
+        class="w-full px-4 py-2 rounded-md text-black focus:outline-none focus:ring-2 focus:ring-green-500"
+      />
+    </div>
+
+  </div>
+</header>
+<!-- ================= END HEADER ================= -->
+
+<!-- ================= MAIN ================= -->
+<main class="flex-1 max-w-6xl mx-auto px-6 py-10 w-full">
+  <div class="bg-white rounded-xl shadow-md p-8 text-center max-w-2xl mx-auto">
+    <h2 class="text-3xl font-bold mb-4">🛒 Kosarad</h2>
+    <div id="cart-items" class="mb-6">
+      <p class="text-gray-500">Még nincs termék a kosárban.</p>
+    </div>
+    <button
+      id="checkout-btn"
+      class="bg-green-500 text-white px-8 py-3 rounded-lg hover:bg-green-600 transition disabled:opacity-50"
+      disabled>
+      Fizetés
+    </button>
+  </div>
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer class="bg-black text-gray-400">
+  <div class="max-w-7xl mx-auto py-8 px-6 text-center">
+    2026 © PC DADDY – Kosár oldal
+  </div>
+</footer>
+
+</body>
+</html>
