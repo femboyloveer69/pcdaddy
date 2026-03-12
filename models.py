@@ -45,61 +45,61 @@ def remove_product(product_id):
     db.execute("DELETE FROM products WHERE id = ?", (product_id,))
     db.commit()
     db.close()
-# Cart
+# Cart (using sessions)
 def get_cart_items():
+    from flask import session
+    cart = session.get('cart', {})
     db = get_db()
     db.row_factory = sqlite3.Row
-    items = db.execute("""
-        SELECT
-            cart.id AS cart_id,
-            products.id AS product_id,
-            products.name,
-            products.price,
-            products.image,
-            cart.quantity
-        FROM cart
-        JOIN products ON cart.product_id = products.id
-    """).fetchall()
+    
+    items = []
+    for product_id, quantity in cart.items():
+        product = db.execute("""
+            SELECT
+                products.id AS product_id,
+                products.name,
+                products.price,
+                products.image
+            FROM products
+            WHERE products.id = ?
+        """, (product_id,)).fetchone()
+        
+        if product:
+            items.append({
+                'product_id': product['product_id'],
+                'name': product['name'],
+                'price': product['price'],
+                'image': product['image'],
+                'quantity': quantity
+            })
+    
     db.close()
     return items
 
 def get_cart_product_count():
-    db = get_db()
-    result = db.execute(
-        "SELECT COUNT(*) FROM cart"
-    ).fetchone()
-    db.close()
-    return result[0]
-
+    from flask import session
+    cart = session.get('cart', {})
+    return sum(cart.values())
 
 
 def add_to_cart(product_id):
-    db = get_db()
-    cur = db.execute(
-        "SELECT quantity FROM cart WHERE product_id = ?",
-        (product_id,)
-    ).fetchone()
-
-    if cur:
-        db.execute(
-            "UPDATE cart SET quantity = quantity + 1 WHERE product_id = ?",
-            (product_id,)
-        )
+    from flask import session
+    if 'cart' not in session:
+        session['cart'] = {}
+    
+    if str(product_id) in session['cart']:
+        session['cart'][str(product_id)] += 1
     else:
-        db.execute(
-            "INSERT INTO cart (product_id, quantity) VALUES (?, 1)",
-            (product_id,)
-        )
-
-    db.commit()
-    db.close()
+        session['cart'][str(product_id)] = 1
+    
+    session.modified = True
 
 
-def remove_from_cart(cart_id):
-    db = get_db()
-    db.execute("DELETE FROM cart WHERE id = ?", (cart_id,))
-    db.commit()
-    db.close()
+def remove_from_cart(product_id):
+    from flask import session
+    if 'cart' in session and str(product_id) in session['cart']:
+        del session['cart'][str(product_id)]
+        session.modified = True
 
 
 

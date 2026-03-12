@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
 from models import *
 import os
 from werkzeug.utils import secure_filename
@@ -8,6 +8,7 @@ UPLOAD_FOLDER = "static/uploads"
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif"}
 
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+app.config["SECRET_KEY"] = "your-secret-key-change-this-in-production"
 
 
 def allowed_file(filename):
