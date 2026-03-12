@@ -109,6 +109,12 @@ def get_all_categories():
     db.close()
     return categories
 
+def get_category(category_id):
+    db = get_db()
+    category = db.execute("SELECT * FROM categories WHERE id = ?", (category_id,)).fetchone()
+    db.close()
+    return category
+
 def add_category(name, image):
     try:
         db = get_db()

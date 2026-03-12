@@ -131,3 +131,31 @@ def add_category_form():
 
     categories = get_all_categories()
     return render_template("add_category.html", items_amount = get_cart_product_count())
+
+@app.route("/delete-product", methods=["GET", "POST"])
+def delete_product_form():
+    if request.method == "POST":
+        try:
+            product_id = int(request.form["product_id"])
+            remove_product(product_id)
+            return redirect(url_for("delete_product_form"))
+        except Exception as e:
+            print("Error deleting product:", e)
+            return f"Error deleting product: {e}", 500
+
+    products = get_all_products()
+    return render_template("delete_product.html", products=products, items_amount=get_cart_product_count())
+
+@app.route("/delete-category", methods=["GET", "POST"])
+def delete_category_form():
+    if request.method == "POST":
+        try:
+            category_id = int(request.form["category_id"])
+            remove_category(category_id)
+            return redirect(url_for("delete_category_form"))
+        except Exception as e:
+            print("Error deleting category:", e)
+            return f"Error deleting category: {e}", 500
+
+    categories = get_all_categories()
+    return render_template("delete_category.html", categories=categories, items_amount=get_cart_product_count())
