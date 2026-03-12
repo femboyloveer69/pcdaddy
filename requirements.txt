@@ -1,3 +1,2 @@
 flask
 jinja2
-gunicorn

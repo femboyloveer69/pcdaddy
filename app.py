@@ -8,7 +8,7 @@ UPLOAD_FOLDER = "static/uploads"
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif"}
 
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
-app.config["SECRET_KEY"] = "your-secret-key-change-this-in-production"
+app.config["SECRET_KEY"] = ":&$$345ásFGfboőFDGDp__asdjvioNHJIPR$"
 
 
 def allowed_file(filename):
