@@ -57,10 +57,12 @@ def products():
         pricemin = request.form.get("pricemin")
         pricemax = request.form.get("pricemax")
         category = request.form.get("category")
-        return redirect(url_for('products', pricemin=pricemin, pricemax=pricemax, category=category))
+        search = request.form.get("search")
+        return redirect(url_for('products', pricemin=pricemin, pricemax=pricemax, category=category, search=search))
     category = request.args.get("category")
     pricemin = request.args.get("pricemin", type=int)
     pricemax = request.args.get("pricemax", type=int)
+    search = request.args.get("search")
     query = "SELECT * FROM products WHERE 1=1 "
     params = []
     if(category):
@@ -70,12 +72,15 @@ def products():
         query += "AND price > ?"
         params.append(pricemin)
     if(pricemax):
-        query += "AND price< ?"
+        query += "AND price < ?"
         params.append(pricemax)
+    if(search):
+        query += "AND (name LIKE ? OR description LIKE ?)"
+        params.extend([f"%{search}%", f"%{search}%"])
     db = get_db()
     products = db.execute(query, params)
     categories = get_all_categories()
-    return render_template("products.html", categories = categories, products = products, items_amount = get_cart_product_count())
+    return render_template("products.html", categories = categories, products = products, items_amount = get_cart_product_count(), search=search)
 
 @app.route("/product/<int:id>")
 def product(id):

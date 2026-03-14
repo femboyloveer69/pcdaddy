@@ -38,12 +38,17 @@ class DatabaseMigrator:
         self.new_conn = sqlite3.connect(self.new_db_path)
         self.new_conn.row_factory = sqlite3.Row
 
-    def close_databases(self):
-        """Close database connections"""
-        if hasattr(self, 'old_conn'):
-            self.old_conn.close()
-        if hasattr(self, 'new_conn'):
-            self.new_conn.close()
+    def initialize_new_database(self):
+        """Initialize the new database with the current schema"""
+        schema_path = Path(__file__).parent / "schema.sql"
+        if not schema_path.exists():
+            raise FileNotFoundError(f"Schema file not found: {schema_path}")
+        
+        with open(schema_path, 'r') as f:
+            schema_sql = f.read()
+        
+        self.new_conn.executescript(schema_sql)
+        self.new_conn.commit()
 
     def table_exists(self, conn, table_name):
         """Check if a table exists in the database"""
@@ -250,6 +255,12 @@ class DatabaseMigrator:
         """Main migration function"""
         try:
             self.connect_databases()
+
+            # Initialize the new database with current schema
+            print("Initializing new database with current schema...")
+            self.initialize_new_database()
+            print("New database initialized.")
+            print()
 
             print("=== DATABASE MIGRATION ===")
             print(f"Old database: {self.old_db_path}")
