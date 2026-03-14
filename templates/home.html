@@ -17,79 +17,90 @@
 </head>
 
 <body class="bg-gray-100 text-gray-900">
-
-<!-- ================= HEADER ================= -->
 <header class="bg-black text-white sticky top-0 z-50 shadow-lg">
-  <div class="max-w-7xl mx-auto flex items-center justify-between px-6 h-20">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6">
+    <div class="flex items-center justify-between h-16 sm:h-20">
+      <div class="flex items-center gap-2 sm:gap-4">
+        <a href="/"><img src="../static/images/logó.png" alt="PC DADDY logó" class="h-12 sm:h-16 w-auto"></a>
+        <div class="leading-tight">
+          <h1 class="text-lg sm:text-2xl font-extrabold text-green-500 tracking-wide">PC DADDY</h1>
+          <p class="text-xs text-gray-400 hidden sm:block">Prémium PC webshop</p>
+        </div>
+      </div>
 
-    <!-- LOGÓ -->
-    <div class="flex items-center gap-4">
-      <a href="/"><img src="../static/images/logó.png" alt="PC DADDY logó" class="h-16 w-auto"></a>
-      <div class="leading-tight">
-        <h1 class="text-2xl font-extrabold text-green-500 tracking-wide">PC DADDY</h1>
-        <p class="text-xs text-gray-400">Prémium PC webshop</p>
+      <div class="flex-1 mx-2 sm:mx-6 hidden md:block">
+        <input
+          type="text"
+          placeholder="Keresés alkatrészek, konfigurációk között..."
+          class="w-full px-4 py-2 rounded-md text-black focus:outline-none focus:ring-2 focus:ring-green-500"
+        />
+      </div>
+
+      <div class="flex items-center">
+        <a href="/cart"><button class="text-2xl sm:text-3xl hover:text-green-500 transition relative" aria-label="Kosár">
+          🛒
+          <span class="absolute -top-2 -right-2 bg-green-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">{{ items_amount }}</span>
+        </button></a>
       </div>
     </div>
 
-    <!-- KERESŐ -->
-    <div class="flex-1 mx-6">
-      <input 
+    <div class="md:hidden pb-4">
+      <input
         type="text"
-        placeholder="Keresés alkatrészek, konfigurációk között..."
+        placeholder="Keresés..."
         class="w-full px-4 py-2 rounded-md text-black focus:outline-none focus:ring-2 focus:ring-green-500"
       />
-    </div>
-
-    <!-- KOSÁR -->
-    <div class="flex items-center">
-      <a href="/cart"><button class="text-3xl hover:text-green-500 transition relative" aria-label="Kosár">
-        🛒
-        <span class="absolute -top-2 -right-2 bg-green-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">{{ items_amount }}</span>
-      </button></a>
     </div>
   </div>
 </header>
 
-<!-- ================= MAIN ================= -->
-<main class="max-w-7xl mx-auto px-6 py-12">
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4">
+      {% for category, message in messages %}
+        <div class="p-4 rounded-lg {% if category == 'success' %}bg-green-100 text-green-800{% else %}bg-red-100 text-red-800{% endif %}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
 
-  <!-- KATEGÓRIÁK CÍM -->
-  <h2 id="kategoria" class="text-3xl font-bold text-center mb-12">Kategóriák</h2>
+<main class="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+  <h2 id="kategoria" class="text-2xl sm:text-3xl font-bold text-center mb-8 sm:mb-12">Kategóriák</h2>
 
-  <!-- KATEGÓRIA RÁCS -->
-<section class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-8">
+<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
   {% for cat in categories %}
     <a href="/products?category={{ cat.name }}"
-       class="block bg-white border rounded-xl shadow-sm hover:shadow-xl transition p-5 text-center hover:ring-2 hover:ring-green-500">
+       class="block bg-white border rounded-xl shadow-sm hover:shadow-xl transition p-4 sm:p-5 text-center hover:ring-2 hover:ring-green-500">
 
         <img src="../static/uploads/{{ cat.image }}"
-             class="h-48 mx-auto mb-4 object-contain"
+             class="h-32 sm:h-40 lg:h-48 mx-auto mb-3 sm:mb-4 object-contain"
              alt="{{ cat.name }}">
 
-        <p class="font-semibold mb-2">{{ cat.name }}</p>
+        <p class="font-semibold text-sm sm:text-base mb-2">{{ cat.name }}</p>
 
-        <span class="inline-block mt-2 bg-black text-white px-4 py-2 rounded hover:bg-green-500 transition">
+        <span class="inline-block mt-2 bg-black text-white px-3 sm:px-4 py-2 rounded hover:bg-green-500 transition text-sm">
           Megnézem
         </span>
 
     </a>
   {% endfor %}
 </section>
-  <!-- ================= BLOG ================= -->
-  <section id="blog" class="mt-20">
+  <section id="blog" class="mt-12 sm:mt-20">
 
-    <h2 class="text-3xl font-bold mb-8 text-center">Blog & Tudástár</h2>
+    <h2 class="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-center">Blog & Tudástár</h2>
 
-    <div class="bg-white border rounded-xl shadow-md p-6 flex flex-col md:flex-row gap-6">
-      <img src="../static/images/blog_pc.jpg" alt="Blog PC" class="w-full md:w-1/2 h-60 object-cover rounded">
+    <div class="bg-white border rounded-xl shadow-md p-4 sm:p-6 flex flex-col md:flex-row gap-4 sm:gap-6">
+      <img src="../static/images/blog_pc.jpg" alt="Blog PC" class="w-full md:w-1/2 h-40 sm:h-48 lg:h-60 object-cover rounded">
       <div class="flex-1">
-        <p>
+        <p class="text-sm sm:text-base">
           Webshopunk 2026-ban indult azzal a céllal, hogy megbízható forrást biztosítson számítógép-alkatrészek és technológiai megoldások terén.
         </p>
-        <p class="mt-2">
+        <p class="mt-2 text-sm sm:text-base">
           Nem csak termékeket árulunk, hanem segítünk választani is. Útmutatók, tesztek és valódi tapasztalatok várnak.
         </p>
-        <button class="mt-4 bg-black text-white px-4 py-2 rounded hover:bg-green-500 transition">Blog megnyitása</button>
+        <button class="mt-4 bg-black text-white px-4 py-2 rounded hover:bg-green-500 transition text-sm sm:text-base">Blog megnyitása</button>
       </div>
     </div>
 
@@ -97,9 +108,8 @@
 
 </main>
 
-<!-- ================= FOOTER ================= -->
-<footer id="kapcsolat" class="bg-black text-gray-400 mt-20">
-  <div class="max-w-7xl mx-auto py-12 px-6 grid md:grid-cols-3 gap-8">
+<footer id="kapcsolat" class="bg-black text-gray-400 mt-12 sm:mt-20">
+  <div class="max-w-7xl mx-auto py-8 sm:py-12 px-4 sm:px-6 grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
 
     <div>
       <h4 class="text-white font-bold mb-4">PC DADDY</h4>

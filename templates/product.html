@@ -42,24 +42,52 @@ body {
 }
 
 .product-container {
-    width: 90%;
+    width: 95%;
+    max-width: 1200px;
     margin: 0 auto 40px auto;
     background: #eee;
     border: 1px solid #bbb;
-    padding: 20px;
+    padding: 15px;
+}
+
+@media (max-width: 768px) {
+    .product-container {
+        width: 98%;
+        padding: 10px;
+        margin-bottom: 20px;
+    }
 }
 .product-layout {
     display: grid;
     grid-template-columns: 1fr 3fr;
     gap: 20px;
 }
+
+@media (max-width: 768px) {
+    .product-layout {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+}
+
 .product-image {
     background: #ddd;
     height: 250px;
     width: 250px;
+    max-width: 100%;
     border-radius: 20px;
     border: 1px solid #aaa;
     background-image: url(../static/uploads/{{product.image}});
+    background-size: cover;
+    background-position: center;
+}
+
+@media (max-width: 768px) {
+    .product-image {
+        height: 200px;
+        width: 200px;
+        margin: 0 auto;
+    }
 }
 .product-description {
     margin-top: 15px;
@@ -140,11 +168,20 @@ body {
 
         <div class="product-info">
             <div class="product-price-box">
-                Termék<br>Ár: {{ product.price }}
+                Termék<br>Ár: {{ product.price }}<br>
+                {% if product.quantity > 0 %}
+                    <span class="text-green-600 font-semibold">Raktáron: {{ product.quantity }} db</span>
+                {% else %}
+                    <span class="text-red-600 font-semibold">Nincs raktáron</span>
+                {% endif %}
             </div>
+            {% if product.quantity > 0 %}
             <form method="POST" action="/add_to_cart/{{ product.id }}">
                 <button type="submit" class="buy-button">Vásárlás</button>
             </form>
+            {% else %}
+            <button class="buy-button opacity-50 cursor-not-allowed" disabled>Nincs raktáron</button>
+            {% endif %}
         </div>
 
     </div>

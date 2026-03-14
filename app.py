@@ -1,7 +1,8 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, flash
 from models import *
 import os
 from werkzeug.utils import secure_filename
+from functools import wraps
 app = Flask(__name__)
 
 UPLOAD_FOLDER = "static/uploads"
@@ -14,6 +15,34 @@ app.config["SECRET_KEY"] = ":&$$345ásFGfboőFDGDp__asdjvioNHJIPR$"
 def allowed_file(filename):
     return "." in filename and \
            filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'user_id' not in session:
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
+        user = authenticate_user(username, password)
+        if user and user["is_admin"]:
+            session["user_id"] = user["id"]
+            session["username"] = user["username"]
+            return redirect(url_for("home"))
+        else:
+            return render_template("login.html", error="Invalid credentials or not an admin")
+    return render_template("login.html")
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("home"))
 
 
 
@@ -62,7 +91,10 @@ def cart():
 
 @app.route("/add_to_cart/<int:id>", methods=["POST"])
 def add_cart_item(id):
-    add_to_cart(id)
+    success = add_to_cart(id)
+    if not success:
+        # Could add flash message here for stock limit reached
+        pass
     return redirect(request.referrer)
 
 @app.route("/remove_from_cart/<int:id>")
@@ -70,7 +102,28 @@ def remove_cart_item(id):
     remove_from_cart(id)
     return redirect(url_for("cart"))
 
+@app.route("/increase_cart/<int:id>")
+def increase_cart(id):
+    increase_cart_quantity(id)
+    return redirect(url_for("cart"))
+
+@app.route("/decrease_cart/<int:id>")
+def decrease_cart(id):
+    decrease_cart_quantity(id)
+    return redirect(url_for("cart"))
+
+@app.route("/checkout", methods=["POST"])
+def checkout():
+    # Clear the cart
+    if 'cart' in session:
+        session['cart'] = {}
+        session.modified = True
+    
+    flash("Sikeres vásárlás! Köszönjük a rendelését.", "success")
+    return redirect(url_for("home"))
+
 @app.route("/add-product", methods=["GET", "POST"])
+@login_required
 def add_product_form():
     if request.method == "POST":
         try:
@@ -78,6 +131,7 @@ def add_product_form():
             description = request.form["description"]
             price = float(request.form["price"]) 
             category_id = int(request.form["category_id"])
+            quantity = int(request.form["quantity"])
 
             file = request.files["image"]
             if not file or file.filename == "":
@@ -92,7 +146,7 @@ def add_product_form():
             filepath = os.path.join(app.config["UPLOAD_FOLDER"], filename)
             file.save(filepath)
 
-            add_product(name, description, price, filename, category_id)
+            add_product(name, description, price, filename, category_id, quantity)
 
             return redirect(url_for("add_product_form"))
 
@@ -104,6 +158,7 @@ def add_product_form():
     return render_template("add_product.html", categories=categories, items_amount = get_cart_product_count())
 
 @app.route("/add-category", methods=["GET", "POST"])
+@login_required
 def add_category_form():
     if request.method == "POST":
         try:
@@ -132,21 +187,34 @@ def add_category_form():
     categories = get_all_categories()
     return render_template("add_category.html", items_amount = get_cart_product_count())
 
-@app.route("/delete-product", methods=["GET", "POST"])
-def delete_product_form():
+@app.route("/edit-product", methods=["GET", "POST"])
+@login_required
+def edit_product_form():
     if request.method == "POST":
-        try:
-            product_id = int(request.form["product_id"])
-            remove_product(product_id)
-            return redirect(url_for("delete_product_form"))
-        except Exception as e:
-            print("Error deleting product:", e)
-            return f"Error deleting product: {e}", 500
+        action = request.form.get("action")
+        product_id = int(request.form["product_id"])
+        
+        if action == "update":
+            try:
+                quantity = int(request.form["quantity"])
+                update_product_quantity(product_id, quantity)
+                return redirect(url_for("edit_product_form"))
+            except Exception as e:
+                print("Error updating product:", e)
+                return f"Error updating product: {e}", 500
+        elif action == "delete":
+            try:
+                remove_product(product_id)
+                return redirect(url_for("edit_product_form"))
+            except Exception as e:
+                print("Error deleting product:", e)
+                return f"Error deleting product: {e}", 500
 
     products = get_all_products()
-    return render_template("delete_product.html", products=products, items_amount=get_cart_product_count())
+    return render_template("edit_product.html", products=products, items_amount=get_cart_product_count())
 
 @app.route("/delete-category", methods=["GET", "POST"])
+@login_required
 def delete_category_form():
     if request.method == "POST":
         try:
@@ -159,3 +227,6 @@ def delete_category_form():
 
     categories = get_all_categories()
     return render_template("delete_category.html", categories=categories, items_amount=get_cart_product_count())
+
+if __name__ == "__main__":
+    app.run(debug=True)

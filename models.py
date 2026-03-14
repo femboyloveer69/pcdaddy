@@ -1,4 +1,5 @@
 import sqlite3
+import hashlib
 
 DB_NAME = "database.db"
 
@@ -9,7 +10,7 @@ def get_db():
 def get_all_products():
     db = get_db()
     products = db.execute("""
-        SELECT products.id, products.name, products.description, products.price, products.image, categories.name as category
+        SELECT products.id, products.name, products.description, products.price, products.image, products.quantity, categories.name as category
         FROM products
         JOIN categories ON products.category_id = categories.id
     """).fetchall()
@@ -19,7 +20,7 @@ def get_all_products():
 def get_product(product_id):
     db = get_db()
     product = db.execute("""
-        SELECT products.id, products.name, products.description, products.price, products.image, categories.name as category
+        SELECT products.id, products.name, products.description, products.price, products.image, products.quantity, categories.name as category
         FROM products
         JOIN categories ON products.category_id = categories.id
         WHERE products.id = ?
@@ -27,12 +28,12 @@ def get_product(product_id):
     db.close()
     return product
 
-def add_product(name, description, price, image, category_id):
+def add_product(name, description, price, image, category_id, quantity):
     try:
         db = get_db()
         db.execute(
-            "INSERT INTO products (name, description, price, image, category_id) VALUES (?, ?, ?, ?, ?)",
-            (name, description, price, image, category_id)
+            "INSERT INTO products (name, description, price, image, category_id, quantity) VALUES (?, ?, ?, ?, ?, ?)",
+            (name, description, price, image, category_id, quantity)
         )
         db.commit()
     except Exception as e:
@@ -45,7 +46,13 @@ def remove_product(product_id):
     db.execute("DELETE FROM products WHERE id = ?", (product_id,))
     db.commit()
     db.close()
-# Cart (using sessions)
+
+def update_product_quantity(product_id, quantity):
+    db = get_db()
+    db.execute("UPDATE products SET quantity = ? WHERE id = ?", (quantity, product_id))
+    db.commit()
+    db.close()
+
 def get_cart_items():
     from flask import session
     cart = session.get('cart', {})
@@ -87,12 +94,59 @@ def add_to_cart(product_id):
     if 'cart' not in session:
         session['cart'] = {}
     
+    # Check available stock
+    product = get_product(product_id)
+    if not product:
+        return False  # Product doesn't exist
+    
+    current_quantity_in_cart = session['cart'].get(str(product_id), 0)
+    if current_quantity_in_cart >= product['quantity']:
+        return False  # Not enough stock
+    
     if str(product_id) in session['cart']:
         session['cart'][str(product_id)] += 1
     else:
         session['cart'][str(product_id)] = 1
     
     session.modified = True
+    return True
+
+
+def increase_cart_quantity(product_id):
+    from flask import session
+    if 'cart' not in session or str(product_id) not in session['cart']:
+        return False
+    
+    # Check available stock
+    product = get_product(product_id)
+    if not product:
+        return False
+    
+    current_quantity_in_cart = session['cart'][str(product_id)]
+    if current_quantity_in_cart >= product['quantity']:
+        return False  # Not enough stock
+    
+    session['cart'][str(product_id)] += 1
+    session.modified = True
+    return True
+
+
+def decrease_cart_quantity(product_id):
+    from flask import session
+    if 'cart' not in session or str(product_id) not in session['cart']:
+        return False
+    
+    if session['cart'][str(product_id)] > 1:
+        session['cart'][str(product_id)] -= 1
+        session.modified = True
+        return True
+    else:
+        # If quantity would be 0, remove the item entirely
+        del session['cart'][str(product_id)]
+        session.modified = True
+        return True
+    
+    return False
 
 
 def remove_from_cart(product_id):
@@ -135,3 +189,30 @@ def remove_category(category_id):
     db.execute("DELETE FROM categories WHERE id = ?", (category_id,))
     db.commit()
     db.close()
+
+def hash_password(password):
+    return hashlib.sha256(password.encode()).hexdigest()
+
+def create_user(username, password, is_admin=False):
+    db = get_db()
+    db.execute(
+        "INSERT INTO users (username, password, is_admin) VALUES (?, ?, ?)",
+        (username, hash_password(password), is_admin)
+    )
+    db.commit()
+    db.close()
+
+def authenticate_user(username, password):
+    db = get_db()
+    user = db.execute(
+        "SELECT * FROM users WHERE username = ? AND password = ?",
+        (username, hash_password(password))
+    ).fetchone()
+    db.close()
+    return user
+
+def get_user_by_username(username):
+    db = get_db()
+    user = db.execute("SELECT * FROM users WHERE username = ?", (username,)).fetchone()
+    db.close()
+    return user
