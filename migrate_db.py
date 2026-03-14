@@ -307,6 +307,7 @@ class DatabaseMigrator:
 def main():
     parser = argparse.ArgumentParser(description="Migrate PC DADDY database")
     parser.add_argument("old_db", help="Path to old database file")
+    parser.add_argument("--new-db", default="database.db", help="Path for new database file (default: database.db)")
     parser.add_argument("--images", help="Path to old uploads directory")
     parser.add_argument("--dry-run", action="store_true", help="Show what would be migrated without doing it")
     parser.add_argument("--force", action="store_true", help="Overwrite conflicting data")
@@ -317,7 +318,7 @@ def main():
         print(f"Error: Old database file '{args.old_db}' does not exist")
         return 1
 
-    migrator = DatabaseMigrator(args.old_db, images_path=args.images)
+    migrator = DatabaseMigrator(args.old_db, new_db_path=args.new_db, images_path=args.images)
     migrator.migrate(dry_run=args.dry_run, force=args.force)
 
     return 0
